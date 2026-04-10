@@ -855,7 +855,8 @@ footer {
 .bullets {
   list-style: none;
   display: grid;
-  gap: 10px;
+  gap: 13px;
+  margin-top: 25px; /* questo crea respiro prima della lista */
 }
 
 .bullets li {
@@ -1229,3 +1230,5 @@ footer {
     padding: 24px;
   }
 }
+
+
