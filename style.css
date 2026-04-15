@@ -1025,12 +1025,20 @@ footer {
     height: 120px;
   }
 
+  .index-logo img {
+    height: 72px;
+  }
+
   nav {
     padding: 18px 20px;
   }
 }
 
 @media (max-width: 600px) {
+
+  .index-logo img {
+    height: 64px;
+  }
 
   #hero {
     padding-top: 120px;
