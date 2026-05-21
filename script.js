@@ -111,11 +111,14 @@ if (contactForm) {
   const privacyConsent = document.getElementById('privacyConsent');
   const privacyConsentError = document.getElementById('privacyConsentError');
 
-  contactForm.addEventListener('submit', (e) => {
+  contactForm.addEventListener('submit', async (e) => {
+    // 1. Blocchiamo subito il cambio pagina di default
+    e.preventDefault(); 
+
     if (privacyConsentError) privacyConsentError.textContent = '';
 
+    // 2. Controlli di validazione
     if (!privacyConsent || !privacyConsent.checked) {
-      e.preventDefault();
       if (privacyConsentError) {
         privacyConsentError.textContent = 'Per continuare devi confermare di aver letto la Privacy Policy.';
       }
@@ -124,18 +127,41 @@ if (contactForm) {
     }
 
     if (!contactForm.checkValidity()) {
-      e.preventDefault();
       contactForm.reportValidity();
       return;
     }
-    if (submitBtn) {
-      submitBtn.textContent = '✓ Inviato!';
-      submitBtn.style.background = 'var(--c5)';
-      setTimeout(() => {
-        submitBtn.textContent = 'Scrivici';
-        submitBtn.style.background = 'var(--c4)';
-        contactForm.reset();
-      }, 2500);
+
+    // 3. Prepariamo l'invio dei dati in background
+    submitBtn.textContent = 'Invio in corso...';
+    submitBtn.disabled = true;
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: {
+            'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Invio riuscito: facciamo partire la tua animazione
+        submitBtn.textContent = '✓ Inviato!';
+        submitBtn.style.background = 'var(--c5)';
+        setTimeout(() => {
+          submitBtn.textContent = 'Scrivici';
+          submitBtn.style.background = 'var(--c4)';
+          submitBtn.disabled = false;
+          contactForm.reset();
+        }, 2500);
+      } else {
+        // Invio fallito (es. Formspree rileva spam)
+        submitBtn.textContent = 'Errore. Riprova.';
+        submitBtn.disabled = false;
+      }
+    } catch (error) {
+      submitBtn.textContent = 'Errore di rete.';
+      submitBtn.disabled = false;
     }
   });
 }
