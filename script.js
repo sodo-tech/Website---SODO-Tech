@@ -128,8 +128,6 @@ if (contactForm) {
       contactForm.reportValidity();
       return;
     }
-
-    e.preventDefault();
     if (submitBtn) {
       submitBtn.textContent = '✓ Inviato!';
       submitBtn.style.background = 'var(--c5)';
